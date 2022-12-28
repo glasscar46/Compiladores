@@ -5,38 +5,49 @@ class CalcParser(Parser):
     # Get the token list from the lexer (required)
     tokens = PTDDLLexer.tokens
 
-    # Grammar rules and actions
-    @_('expr PLUS term')
-    def expr(self, p):
-        return p.expr + p.term
+    @_('APAGAR apexp')
+    def start(self, p):
+        return f'drop {p.apexp};'
 
-    @_('expr MINUS term')
-    def expr(self, p):
-        return p.expr - p.term
+    @_('BANCO NOMEENTIDADE')
+    def apexp(self, p):
+        return f"database {p[1]}"
 
-    @_('term')
-    def expr(self, p):
-        return p.term
+    @_('TABELA NOMEENTIDADE')
+    def apexp(self, p):
+        return f"table {p[1]}"
 
-    @_('term TIMES factor')
-    def term(self, p):
-        return p.term * p.factor
+    @_('CRIAR criarexp')
+    def start(self, p):
+        return f"create {p[1]};"
+    
+    @_('TABELA NOMEENTIDADE COM cd')
+    def criarexp(self, p):
+        return f'table {p[1]}' + '('+ f'{p[3]}' + ')'
+    
+    def translate_constraint(self, constraint: str) -> str:
+        if constraint == 'nao nulo':
+            return 'NOT NULL'
+        return 'NULL'
 
-    @_('term DIVIDE factor')
-    def term(self, p):
-        return p.term / p.factor
+    @_('COLUNA NOMEENTIDADE TIPO TIPOCOLUNA CONSTRAINT acd')
+    def cd(self, p):
+        return f'{p[1]} {p[3]} {self.translate_constraint(p[4])}{p[5]}'
 
-    @_('factor')
-    def term(self, p):
-        return p.factor
+    @_('COLUNA NOMEENTIDADE TIPO TIPOCOLUNA acd')
+    def cd(self, p):
+        return f'{p[1]} {p[3]} {p[4]}'
 
-    @_('NUMBER')
-    def factor(self, p):
-        return p.NUMBER
+    @_('E cd')
+    def acd(self, p):
+        return f', {p[1]}'
+    @_('')
+    def empty(self, p):
+        return ''
 
-    @_('LPAREN expr RPAREN')
-    def factor(self, p):
-        return p.expr
+    @_('empty')
+    def acd(self, p):
+        return ''
 
 if __name__ == '__main__':
     lexer = PTDDLLexer()
@@ -44,7 +55,7 @@ if __name__ == '__main__':
 
     while True:
         try:
-            text = input('convert: ')
+            text = input('> ')
             result = parser.parse(lexer.tokenize(text))
             print(result)
         except EOFError:

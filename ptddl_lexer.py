@@ -2,19 +2,35 @@ from sly import Lexer
 
 class PTDDLLexer(Lexer):
     
-    tokens = { 'IDENT', 'TIPOENT', 'TIPO', 'CRIAR', 'ALTERAR', 'APAGAR', 'PRONOME', 'CMD', 'E' , "TIPOCOLUNA", "TIPOENTIDADE"}
-    E = 'E|e'
-    IDENT = r'[a-zA-Z_][a-zA-Z0-9_]*'
-    IDENT['a'] = 'PRONOME'
-    IDENT['o'] = 'PRONOME'
-    IDENT['A'] = 'PRONOME'
-    IDENT['O'] = 'PRONOME'
-    IDENT['apaga'] = 'APAGAR'
-    IDENT['altera'] = 'ALTERAR'
-    IDENT['cria'] = 'CRIAR'
+    tokens = { 'NOMEENTIDADE', 'TIPOCOLUNA', 'TIPO', 'CRIAR', 'ALTERAR', 'APAGAR','E' ,'RENOMEAR',
+     "COLUNA", "TABELA", "BANCO", "ADICIONAR", "INDICE", "COM" , "IGNORA", "CONSTRAINT", 'IDENT', "START"}
+    
+    E = r'e'
+    START = r'#'
+
+    NOMEENTIDADE = r'[A-Z][a-zA-Z0-9_]*'
+    TIPOCOLUNA = r'int|varchar|timestamp|data|float|char'
+    TIPO = r'tipo'
+    CONSTRAINT = r'nulo|nao nulo|chave primaria'
+    IDENT = r'[a-z_][a-z0-9_]*'
+    IDENT['a'] = 'IGNORA'
+    IDENT['o'] = 'IGNORA'
+    IDENT['um'] = 'IGNORA'
+    IDENT['uma'] = 'IGNORA'
     IDENT['apagar'] = 'APAGAR'
     IDENT['alterar'] = 'ALTERAR'
     IDENT['criar'] = 'CRIAR'
+    IDENT['tabela'] = 'TABELA'
+    IDENT['alterar'] = 'ALTERAR'
+    IDENT['criar'] = 'CRIAR'
+    IDENT['banco'] = 'BANCO'
+    IDENT['indice'] = 'INDICE'
+    IDENT['com'] = 'COM'
+    IDENT['coluna'] = 'COLUNA'
+    IDENT['renomear'] = 'RENOMEAR'
+
+
+    
 
     # String containing ignored characters
     ignore = ' \t'
@@ -25,7 +41,8 @@ class PTDDLLexer(Lexer):
         self.lineno += t.value.count('\n')
 
 if __name__ == '__main__':
-    data = "apagar a tabela pessoa e a tabela carro e apagar a tabela pessoa e a tabela carro"
+    data = "criar tabela Pessoa com coluna Nome tipo varchar chave primaria e coluna Idade tipo int e coluna Sexo tipo char"
+
     lexer = PTDDLLexer()
     for tok in lexer.tokenize(data):
         print(tok)
