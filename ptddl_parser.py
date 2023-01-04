@@ -99,7 +99,7 @@ class PTTDDLParser(Parser):
 
 if __name__ == '__main__':
     lexer = PTDDLLexer()
-    parser = CalcParser()
+    parser = PTDDLLexer()
     print("Bem vindo ao conversor de linguagem natural (pt-Br) ao SQL(DDL)")
     while True:
         try:
