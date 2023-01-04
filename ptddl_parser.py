@@ -4,7 +4,6 @@ from ptddl_lexer import PTDDLLexer
 class CalcParser(Parser):
     # Get the token list from the lexer (required)
     tokens = PTDDLLexer.tokens
-    debugfile = 'parser.out'
 
     #Produções da Gramática
     @_('APAGAR apexp')
@@ -27,6 +26,10 @@ class CalcParser(Parser):
     def criarexp(self, p):
         return f'TABLE {p[1]}' + '(' + '\n' + f' {p[3]}'  + '\n' + ')'
     
+    @_('BANCO NOMEENTIDADE')
+    def criarexp(self, p):
+        return f'DATABASE {p[1]}'
+
     #Traducao para PT-Br
     def translate_constraint(self, constraint: str) -> str:
         if constraint == 'nao nulo':
