@@ -1,7 +1,7 @@
 from sly import Parser
 from ptddl_lexer import PTDDLLexer
 
-class CalcParser(Parser):
+class PTTDDLParser(Parser):
     # Get the token list from the lexer (required)
     tokens = PTDDLLexer.tokens
 
