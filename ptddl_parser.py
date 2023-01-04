@@ -6,6 +6,7 @@ class CalcParser(Parser):
     tokens = PTDDLLexer.tokens
     debugfile = 'parser.out'
 
+    #Produções da Gramática
     @_('APAGAR apexp')
     def start(self, p):
         return f'DROP {p.apexp};'
@@ -26,9 +27,12 @@ class CalcParser(Parser):
     def criarexp(self, p):
         return f'TABLE {p[1]}' + '(' + '\n' + f' {p[3]}'  + '\n' + ')'
     
+    #Traducao para PT-Br
     def translate_constraint(self, constraint: str) -> str:
         if constraint == 'nao nulo':
             return 'NOT NULL'
+        elif constraint == 'chave primaria':
+            return "PRIMARY KEY"    
         return 'NULL'
 
     @_('COLUNA NOMEENTIDADE TIPO TIPOCOLUNA CONSTRAINT acd')
